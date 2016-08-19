@@ -9,6 +9,7 @@ define ipa::clientinstall (
   $adminpw      = {},
   $otp          = {},
   $mkhomedir    = {},
+  $dns          = {},
   $ntp          = {},
   $fixedprimary = false
 ) {
@@ -17,6 +18,12 @@ define ipa::clientinstall (
 
   $mkhomediropt = $mkhomedir ? {
     true    => '--mkhomedir',
+    default => ''
+  }
+
+
+  $dnsopt = $dns ? {
+    true    => '--enable-dns-updates',
     default => ''
   }
 
@@ -30,7 +37,7 @@ define ipa::clientinstall (
     default => ''
   }
 
-  $clientinstallcmd = shellquote('/usr/sbin/ipa-client-install',"--server=${masterfqdn}","--hostname=${host}","--domain=${domain}","--realm=${realm}","--password=${otp}",$mkhomediropt,$ntpopt,$fixedprimaryopt,'--unattended')
+  $clientinstallcmd = shellquote('/usr/sbin/ipa-client-install',"--server=${masterfqdn}","--hostname=${host}","--domain=${domain}","--realm=${realm}","--password=${otp}",$mkhomediropt,$dnsopt,$ntpopt,$fixedprimaryopt,'--unattended')
   $dc = prefix([regsubst($domain,'(\.)',',dc=','G')],'dc=')
   $searchostldapcmd = shellquote('/usr/bin/k5start','-u',"host/${host}",'-f','/etc/krb5.keytab','--','/usr/bin/ldapsearch','-Y','GSSAPI','-H',"ldap://${masterfqdn}",'-b',$dc,"fqdn=${host}")
 
