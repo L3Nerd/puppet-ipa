@@ -21,7 +21,6 @@ define ipa::clientinstall (
     default => ''
   }
 
-
   $dnsopt = $dns ? {
     true    => '--enable-dns-updates',
     default => ''
