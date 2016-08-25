@@ -101,10 +101,17 @@ class ipa::master (
     $dnsopt = '--setup-dns'
     realize Package['bind-dyndb-ldap']
     
-    firewall { '103 allow IPA master DNS services':
+    firewall { '103 allow IPA master DNS services UDP':
       ensure => 'present',
       action => 'accept',
       proto  => 'udp',
+      dport  => ['53'],
+    }
+    
+    firewall { '104 allow IPA master DNS services TCP':
+      ensure => 'present',
+      action => 'accept',
+      proto  => 'tcp',
       dport  => ['53'],
     }
   }
