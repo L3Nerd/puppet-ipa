@@ -41,7 +41,7 @@ define ipa::clientinstall (
   $searchostldapcmd = shellquote('/usr/bin/k5start','-u',"host/${host}",'-f','/etc/krb5.keytab','--','/usr/bin/ldapsearch','-Y','GSSAPI','-H',"ldap://${masterfqdn}",'-b',$dc,"fqdn=${host}")
 
   exec { "client-install-${host}":
-    command   => "/bin/echo | ${clientinstallcmd}",
+    command   => $clientinstallcmd,
     unless    => "${searchostldapcmd} | /bin/grep ^krbLastPwdChange",
     timeout   => '0',
     tries     => '60',
